@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-configmap
+data:
+  db: testdatabase
+  user: testuser
+  storage: /var/lib/postgresql/data/pgdata

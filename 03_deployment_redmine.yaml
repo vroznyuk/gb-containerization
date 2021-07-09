@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redmine-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redmine-app
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redmine-app
+    spec:
+      containers:
+      - image: redmine:4.1.1
+        name: redmine
+        env:
+        - name: REDMINE_DB_POSTGRES
+          value: database
+        - name: REDMINE_DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-configmap
+              key: user
+        - name: REDMINE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secret
+              key: pass 
+        - name: REDMINE_DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: postgres-configmap
+              key: db
+        - name: REDMINE_SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: redmine-secret
+              key: secretkey
+        ports:
+        - containerPort: 3000
